@@ -227,10 +227,6 @@ impl SemanticDb for Db {
         self.settings().analysis(self)
     }
 
-    fn python_version_source(&self, program: Program) -> PythonVersionSource {
-        program.python_version_source(self).clone()
-    }
-
     fn dyn_clone(&self) -> Box<dyn SemanticDb> {
         Box::new(self.clone())
     }

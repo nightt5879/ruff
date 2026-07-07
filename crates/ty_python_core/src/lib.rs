@@ -88,13 +88,7 @@ mod contextual {
 
         let module = parsed_module(db, versioned_file).load(db);
 
-        SemanticIndexBuilder::new(
-            db,
-            analysis_file,
-            &module,
-            versioned_file.python_version(db),
-        )
-        .build()
+        SemanticIndexBuilder::new(db, analysis_file, &module).build()
     }
 }
 

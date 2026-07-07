@@ -1,4 +1,3 @@
-use ruff_db::Db as _;
 use ruff_db::files::{FilePath, system_path_to_file};
 use ruff_db::system::SystemPath;
 use ty_module_resolver::{
@@ -19,7 +18,7 @@ pub(crate) struct Resolver<'a> {
 impl<'a> Resolver<'a> {
     /// Initialize a [`Resolver`] with a given [`ModuleDb`].
     pub(crate) fn new(db: &'a ModuleDb, path: &SystemPath) -> Self {
-        let program = ResolverProgram::create(db, db.python_version(), db.search_paths());
+        let program = db.resolver_program();
         // If we know the importing file we can potentially resolve more imports
         let file = system_path_to_file(db, path)
             .ok()

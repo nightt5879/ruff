@@ -544,13 +544,6 @@ impl SemanticDb for ProjectDatabase {
         settings.analysis(self)
     }
 
-    fn python_version_source(
-        &self,
-        program: ty_python_core::program::Program,
-    ) -> ty_python_semantic::PythonVersionSource {
-        program.python_version_source(self).clone()
-    }
-
     fn verbose(&self) -> bool {
         self.project().verbose(self)
     }
@@ -872,8 +865,8 @@ mod tests {
         );
 
         assert_eq!(
-            ty_python_semantic::Db::python_version_source(&db, alternate_program),
-            PythonVersionSource::Cli
+            alternate_program.python_version_source(&db),
+            &PythonVersionSource::Cli
         );
 
         Ok(())
@@ -919,8 +912,8 @@ mod tests {
         assert_eq!(updated, original);
         assert_eq!(updated.python_version(&db), python_version);
         assert_eq!(
-            ty_python_semantic::Db::python_version_source(&db, updated),
-            PythonVersionSource::Cli
+            updated.python_version_source(&db),
+            &PythonVersionSource::Cli
         );
 
         settings.python_version.source = PythonVersionSource::Editor;
@@ -929,8 +922,8 @@ mod tests {
         let updated = project.program(&db);
         assert_eq!(updated, original);
         assert_eq!(
-            ty_python_semantic::Db::python_version_source(&db, updated),
-            PythonVersionSource::Editor
+            updated.python_version_source(&db),
+            &PythonVersionSource::Editor
         );
 
         Ok(())

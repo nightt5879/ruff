@@ -61,15 +61,12 @@ pub fn resolve_module<'db>(
     importing_file: ProgramFile<'db>,
     module_name: &ModuleName,
 ) -> Option<Module<'db>> {
-    let interned_name = ModuleNameIngredient::new(
+    resolve_module_with_desperate(
         db,
-        importing_file.program(db),
+        importing_file,
         module_name,
         ModuleResolveMode::StubsAllowed,
-    );
-
-    resolve_module_query(db, interned_name)
-        .or_else(|| desperately_resolve_module(db, importing_file, interned_name))
+    )
 }
 
 /// Resolves a module name to a module, without desperate resolution available.
@@ -93,15 +90,12 @@ pub fn resolve_real_module<'db>(
     importing_file: ProgramFile<'db>,
     module_name: &ModuleName,
 ) -> Option<Module<'db>> {
-    let interned_name = ModuleNameIngredient::new(
+    resolve_module_with_desperate(
         db,
-        importing_file.program(db),
+        importing_file,
         module_name,
         ModuleResolveMode::StubsNotAllowed,
-    );
-
-    resolve_module_query(db, interned_name)
-        .or_else(|| desperately_resolve_module(db, importing_file, interned_name))
+    )
 }
 
 /// Resolves a module name to a module, without desperate resolution available (stubs not allowed).
@@ -135,12 +129,22 @@ pub fn resolve_real_shadowable_module<'db>(
     importing_file: ProgramFile<'db>,
     module_name: &ModuleName,
 ) -> Option<Module<'db>> {
-    let interned_name = ModuleNameIngredient::new(
+    resolve_module_with_desperate(
         db,
-        importing_file.program(db),
+        importing_file,
         module_name,
         ModuleResolveMode::StubsNotAllowedSomeShadowingAllowed,
-    );
+    )
+}
+
+fn resolve_module_with_desperate<'db>(
+    db: &'db dyn Db,
+    importing_file: ProgramFile<'db>,
+    module_name: &ModuleName,
+    mode: ModuleResolveMode,
+) -> Option<Module<'db>> {
+    let interned_name =
+        ModuleNameIngredient::new(db, importing_file.program(db), module_name, mode);
 
     resolve_module_query(db, interned_name)
         .or_else(|| desperately_resolve_module(db, importing_file, interned_name))

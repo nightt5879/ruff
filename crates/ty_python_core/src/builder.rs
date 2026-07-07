@@ -304,9 +304,9 @@ impl<'db, 'ast> SemanticIndexBuilder<'db, 'ast> {
         db: &'db dyn Db,
         analysis_file: AnalysisFile<'db>,
         module_ref: &'ast ParsedModuleRef,
-        python_version: PythonVersion,
     ) -> Self {
         let file = analysis_file.file(db);
+        let python_version = analysis_file.versioned_file(db).python_version(db);
         let mut builder = Self {
             db,
             analysis_file,

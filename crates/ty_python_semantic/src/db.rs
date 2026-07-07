@@ -4,8 +4,6 @@ use ruff_db::diagnostic::Diagnostic;
 use ruff_db::files::File;
 use ty_python_core::Db as PythonCoreDb;
 use ty_python_core::environment::AnalysisFile;
-use ty_python_core::program::Program;
-use ty_site_packages::PythonVersionSource;
 
 /// Database giving access to semantic information about a Python program.
 #[salsa::db]
@@ -18,10 +16,6 @@ pub trait Db: PythonCoreDb {
     fn lint_registry(&self) -> &LintRegistry;
 
     fn analysis_settings(&self, file: File) -> &AnalysisSettings;
-
-    fn python_version_source(&self, _program: Program) -> PythonVersionSource {
-        PythonVersionSource::Default
-    }
 
     /// Whether ty is running with logging verbosity INFO or higher (`-v` or more).
     fn verbose(&self) -> bool;
@@ -188,10 +182,6 @@ pub(crate) mod tests {
 
         fn analysis_settings(&self, _file: File) -> &AnalysisSettings {
             &self.analysis_settings
-        }
-
-        fn python_version_source(&self, program: Program) -> PythonVersionSource {
-            program.python_version_source(self).clone()
         }
 
         fn verbose(&self) -> bool {

@@ -49,7 +49,7 @@ pub fn add_inferred_python_version_hint_to_diagnostic(
     action: &str,
 ) {
     let version = program.python_version(db);
-    let source = db.python_version_source(program);
+    let source = program.python_version_source(db).clone();
 
     match source {
         crate::PythonVersionSource::Cli => {
